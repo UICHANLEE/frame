@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>영뽀또 감성 구도 카메라 클론</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="phone" aria-label="감성 구도 카메라">
+        <header class="camera-topbar">
+          <div>
+            <p class="eyebrow">YOUNG PPOTTO</p>
+            <h1>감성 구도 카메라</h1>
+          </div>
+          <button id="saveButton" class="icon-button" type="button" disabled title="사진 저장">저장</button>
+        </header>
+
+        <section class="viewfinder" aria-label="카메라 미리보기">
+          <video id="camera" autoplay muted playsinline></video>
+          <canvas id="sourceCanvas" width="1280" height="960" hidden></canvas>
+          <canvas id="renderCanvas" width="1280" height="960"></canvas>
+          <div id="cameraFallback" class="camera-fallback">
+            <strong>카메라를 시작하세요</strong>
+            <span>카메라 없이도 샘플 장면으로 구도와 필터를 확인할 수 있습니다.</span>
+          </div>
+          <div class="guide-label" id="guideLabel">삼분할 구도</div>
+          <div class="shooting-tip" id="shootingTip">피사체를 교차점에 두면 시선이 자연스럽게 이동합니다.</div>
+        </section>
+
+        <nav class="mode-tabs" aria-label="작업 모드">
+          <button class="is-active" type="button" data-mode="camera">촬영</button>
+          <button type="button" data-mode="guides">구도</button>
+          <button type="button" data-mode="filters">필터</button>
+          <button type="button" data-mode="lessons">강의</button>
+        </nav>
+
+        <section class="panel" data-panel="camera">
+          <div class="action-grid">
+            <button id="startButton" class="primary-button" type="button">카메라 시작</button>
+            <button id="captureButton" class="primary-button" type="button" disabled>촬영</button>
+            <button id="sampleButton" class="secondary-button" type="button">샘플 장면</button>
+            <label class="secondary-button file-button">
+              사진 불러오기
+              <input id="uploadInput" type="file" accept="image/*" />
+            </label>
+          </div>
+          <div class="filmstrip" id="filmstrip" aria-label="최근 촬영 이미지"></div>
+        </section>
+
+        <section class="panel is-hidden" data-panel="guides">
+          <div class="guide-list" id="guideList"></div>
+        </section>
+
+        <section class="panel is-hidden" data-panel="filters">
+          <div class="filter-list" id="filterList"></div>
+          <div class="effect-box">
+            <label>
+              그레인
+              <input id="grainRange" type="range" min="0" max="35" value="12" />
+            </label>
+            <label>
+              비네팅
+              <input id="vignetteRange" type="range" min="0" max="70" value="28" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel is-hidden" data-panel="lessons">
+          <div class="lesson-list" id="lessonList"></div>
+        </section>
+      </section>
+
+      <aside class="app-info" aria-label="앱 설명">
+        <p class="eyebrow">APP STORE BASED CLONE</p>
+        <h2>구도 가이드와 감성 필터 중심으로 재구현</h2>
+        <p>
+          App Store 설명 기준으로 촬영 중 구도 가이드라인, 감성 필터, 이펙트,
+          구도 강의 흐름을 웹 카메라 앱으로 구현했습니다.
+        </p>
+        <dl>
+          <div>
+            <dt>구도</dt>
+            <dd>삼분할, 중앙, 수평선, 대각선, 인물 여백</dd>
+          </div>
+          <div>
+            <dt>필터</dt>
+            <dd>맑은 필름, 동화, 시네마, 노을, 모노</dd>
+          </div>
+          <div>
+            <dt>출력</dt>
+            <dd>필터와 가이드를 반영한 PNG 저장</dd>
+          </div>
+        </dl>
+      </aside>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
