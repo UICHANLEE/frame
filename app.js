@@ -1,376 +1,525 @@
 const guides = [
-  { id: "thirds", icon: "III", name: "삼분할 구도", tip: "피사체를 교차점에 두면 시선이 자연스럽게 이동합니다." },
-  { id: "center", icon: "O", name: "중앙 집중", tip: "대칭 건물, 음식, 제품 사진은 중앙에 놓으면 안정감이 생깁니다." },
-  { id: "horizon", icon: "H", name: "수평선", tip: "하늘이 예쁘면 수평선을 아래로, 바닥 질감이 좋으면 위로 올리세요." },
-  { id: "diagonal", icon: "/", name: "대각선 흐름", tip: "길, 계단, 그림자를 대각선으로 잡으면 사진에 움직임이 생깁니다." },
-  { id: "portrait", icon: "P", name: "인물 여백", tip: "얼굴 위쪽 여백은 줄이고 시선 방향에는 공간을 남기세요." },
+  {
+    id: "thirds",
+    name: "삼분할",
+    short: "인물/카페/일상",
+    tip: "주인공을 교차점에 올리고 비워둘 방향을 정하세요.",
+  },
+  {
+    id: "center",
+    name: "중앙",
+    short: "음식/제품/대칭",
+    tip: "배경이 정돈되어 있을 때 중앙 배치가 가장 강합니다.",
+  },
+  {
+    id: "horizon",
+    name: "수평선",
+    short: "풍경/하늘/바다",
+    tip: "하늘이 예쁘면 수평선을 아래로, 바닥 질감이 좋으면 위로 올리세요.",
+  },
+  {
+    id: "diagonal",
+    name: "대각선",
+    short: "길/계단/그림자",
+    tip: "선이 화면을 가로지르게 두면 사진에 움직임이 생깁니다.",
+  },
+  {
+    id: "portrait",
+    name: "인물 여백",
+    short: "상반신/전신",
+    tip: "머리 위 여백은 줄이고 시선 방향에는 숨 쉴 공간을 남기세요.",
+  },
+  {
+    id: "golden",
+    name: "황금나선",
+    short: "감성 스냅",
+    tip: "큰 곡선의 끝에 시선을 둘 피사체를 배치하세요.",
+  },
 ];
 
 const filters = [
-  { id: "clear", icon: "C", name: "맑은 필름", tip: "일상과 카페 사진에 맞는 밝고 투명한 색감입니다.", css: "brightness(1.06) contrast(0.96) saturate(1.08)", overlay: "rgba(255, 245, 225, 0.08)" },
-  { id: "fairy", icon: "F", name: "동화", tip: "초록과 피부톤을 부드럽게 살리는 따뜻한 필터입니다.", css: "brightness(1.08) contrast(0.9) saturate(1.18) sepia(0.08)", overlay: "rgba(255, 221, 184, 0.16)" },
-  { id: "cinema", icon: "M", name: "시네마", tip: "명암을 깊게 만들어 영화 장면 같은 분위기를 만듭니다.", css: "brightness(0.96) contrast(1.15) saturate(0.92)", overlay: "rgba(18, 38, 45, 0.16)" },
-  { id: "sunset", icon: "S", name: "노을", tip: "해 질 무렵의 주황빛을 강조합니다.", css: "brightness(1.02) contrast(1.04) saturate(1.22) sepia(0.16)", overlay: "rgba(238, 125, 66, 0.16)" },
-  { id: "mono", icon: "B", name: "모노", tip: "색을 줄이고 선과 표정에 집중합니다.", css: "grayscale(1) contrast(1.08) brightness(1.02)", overlay: "rgba(255, 255, 255, 0.02)" },
+  {
+    id: "ppotto",
+    name: "영뽀또",
+    short: "따뜻하고 투명한 기본 톤",
+    css: "brightness(1.06) contrast(0.96) saturate(1.1) sepia(0.04)",
+    overlay: [244, 211, 173],
+    blend: "soft-light",
+  },
+  {
+    id: "fairy",
+    name: "동화",
+    short: "초록과 피부톤을 부드럽게",
+    css: "brightness(1.09) contrast(0.9) saturate(1.2) sepia(0.08)",
+    overlay: [255, 224, 190],
+    blend: "screen",
+  },
+  {
+    id: "daily",
+    name: "데일리",
+    short: "실내와 카페에 맞는 맑은 톤",
+    css: "brightness(1.04) contrast(0.98) saturate(1.04)",
+    overlay: [230, 218, 195],
+    blend: "soft-light",
+  },
+  {
+    id: "cinema",
+    name: "시네마",
+    short: "깊은 그림자와 차분한 색",
+    css: "brightness(0.95) contrast(1.16) saturate(0.92)",
+    overlay: [32, 48, 54],
+    blend: "multiply",
+  },
+  {
+    id: "sunset",
+    name: "노을",
+    short: "해 질 무렵의 주황빛",
+    css: "brightness(1.03) contrast(1.03) saturate(1.24) sepia(0.14)",
+    overlay: [238, 124, 65],
+    blend: "soft-light",
+  },
+  {
+    id: "mono",
+    name: "모노",
+    short: "표정과 선에 집중",
+    css: "grayscale(1) contrast(1.09) brightness(1.02)",
+    overlay: [255, 255, 255],
+    blend: "soft-light",
+  },
 ];
 
 const lessons = [
-  { icon: "1", name: "시선이 가는 곳 정하기", tip: "촬영 전 주인공을 하나만 정하세요. 배경은 주인공을 설명하는 요소로만 남깁니다." },
-  { icon: "2", name: "전경으로 깊이 만들기", tip: "창문, 잎, 난간 같은 가까운 물체를 가장자리에 두면 공간감이 생깁니다." },
-  { icon: "3", name: "빛 방향 확인하기", tip: "역광은 윤곽을 만들고, 측면광은 질감을 살립니다. 얼굴 사진은 부드러운 창가빛이 안정적입니다." },
-  { icon: "4", name: "필터는 약하게", tip: "좋은 색감은 강한 보정보다 일관된 톤에서 나옵니다. 채도와 대비를 과하게 올리지 마세요." },
+  ["시선 먼저 정하기", "사진을 찍기 전에 보는 사람이 가장 먼저 봐야 할 지점을 하나만 정하세요."],
+  ["비우는 쪽 정하기", "피사체가 바라보는 방향이나 걸어가는 방향에 여백을 주면 답답함이 줄어듭니다."],
+  ["전경으로 감성 만들기", "창문, 잎, 커튼, 난간을 화면 앞쪽에 살짝 걸치면 깊이가 생깁니다."],
+  ["빛은 옆에서 받기", "측면광은 얼굴과 사물의 질감을 살립니다. 정오 직광은 피하는 편이 안정적입니다."],
+  ["필터는 분위기만", "색감은 사진을 덮는 게 아니라 방향을 잡는 정도가 좋습니다."],
 ];
 
 const state = {
   stream: null,
+  facingMode: "environment",
   uploadedImage: null,
-  captures: [],
+  lastShot: null,
   guide: guides[0],
   filter: filters[0],
-  grain: 12,
-  vignette: 28,
-  lastFrameReady: false,
+  filterStrength: 0.78,
+  grain: 10,
+  vignette: 0.24,
+  ready: false,
+  toastTimer: null,
 };
 
 const els = {
-  video: document.querySelector("#camera"),
+  video: document.querySelector("#cameraVideo"),
   sourceCanvas: document.querySelector("#sourceCanvas"),
-  renderCanvas: document.querySelector("#renderCanvas"),
-  fallback: document.querySelector("#cameraFallback"),
-  startButton: document.querySelector("#startButton"),
+  outputCanvas: document.querySelector("#outputCanvas"),
+  permissionCard: document.querySelector("#permissionCard"),
+  startCameraButton: document.querySelector("#startCameraButton"),
+  sampleSceneButton: document.querySelector("#sampleSceneButton"),
+  switchCameraButton: document.querySelector("#switchCameraButton"),
+  openPhotoButton: document.querySelector("#openPhotoButton"),
+  photoInput: document.querySelector("#photoInput"),
   captureButton: document.querySelector("#captureButton"),
-  sampleButton: document.querySelector("#sampleButton"),
   saveButton: document.querySelector("#saveButton"),
-  uploadInput: document.querySelector("#uploadInput"),
-  filmstrip: document.querySelector("#filmstrip"),
-  guideLabel: document.querySelector("#guideLabel"),
-  shootingTip: document.querySelector("#shootingTip"),
-  guideList: document.querySelector("#guideList"),
-  filterList: document.querySelector("#filterList"),
-  lessonList: document.querySelector("#lessonList"),
-  modeTabs: document.querySelector(".mode-tabs"),
+  lastShotButton: document.querySelector("#lastShotButton"),
+  guideName: document.querySelector("#guideName"),
+  guideTip: document.querySelector("#guideTip"),
+  activeSummary: document.querySelector("#activeSummary"),
+  guidePicker: document.querySelector("#guidePicker"),
+  filterPicker: document.querySelector("#filterPicker"),
+  lessonStack: document.querySelector("#lessonStack"),
+  tabBar: document.querySelector(".tool-tabs"),
   panels: document.querySelectorAll("[data-panel]"),
-  grainRange: document.querySelector("#grainRange"),
-  vignetteRange: document.querySelector("#vignetteRange"),
+  filterStrength: document.querySelector("#filterStrength"),
+  grainStrength: document.querySelector("#grainStrength"),
+  vignetteStrength: document.querySelector("#vignetteStrength"),
+  toast: document.querySelector("#toast"),
 };
 
-const sourceCtx = els.sourceCanvas.getContext("2d");
-const renderCtx = els.renderCanvas.getContext("2d");
+const sourceCtx = els.sourceCanvas.getContext("2d", { willReadFrequently: false });
+const outputCtx = els.outputCanvas.getContext("2d", { willReadFrequently: false });
 
-bindEvents();
-renderCards();
-loadSampleScene();
-requestAnimationFrame(drawLoop);
+boot();
+
+function boot() {
+  renderPickers();
+  bindEvents();
+  updateCopy();
+  drawSampleScene();
+  requestAnimationFrame(draw);
+}
 
 function bindEvents() {
-  els.startButton.addEventListener("click", startCamera);
+  els.startCameraButton.addEventListener("click", startCamera);
+  els.sampleSceneButton.addEventListener("click", () => {
+    stopCamera();
+    state.uploadedImage = null;
+    els.permissionCard.hidden = true;
+    showToast("샘플 장면으로 구도와 필터를 확인합니다.");
+  });
+  els.switchCameraButton.addEventListener("click", switchCamera);
+  els.openPhotoButton.addEventListener("click", () => els.photoInput.click());
+  els.photoInput.addEventListener("change", loadPhoto);
   els.captureButton.addEventListener("click", capture);
-  els.sampleButton.addEventListener("click", loadSampleScene);
-  els.saveButton.addEventListener("click", saveCurrentFrame);
-  els.uploadInput.addEventListener("change", loadUploadedPhoto);
-  els.modeTabs.addEventListener("click", switchPanel);
-  els.grainRange.addEventListener("input", (event) => {
+  els.saveButton.addEventListener("click", save);
+  els.lastShotButton.addEventListener("click", restoreLastShot);
+  els.tabBar.addEventListener("click", switchTab);
+  els.filterStrength.addEventListener("input", (event) => {
+    state.filterStrength = Number(event.target.value) / 100;
+  });
+  els.grainStrength.addEventListener("input", (event) => {
     state.grain = Number(event.target.value);
   });
-  els.vignetteRange.addEventListener("input", (event) => {
-    state.vignette = Number(event.target.value);
+  els.vignetteStrength.addEventListener("input", (event) => {
+    state.vignette = Number(event.target.value) / 100;
   });
 }
 
 async function startCamera() {
   if (!navigator.mediaDevices?.getUserMedia) {
-    setFallback("브라우저가 카메라를 지원하지 않습니다.", "사진 불러오기 또는 샘플 장면을 사용하세요.");
+    showToast("이 브라우저는 카메라 API를 지원하지 않습니다.");
     return;
   }
 
-  state.stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 960 } },
-    audio: false,
-  });
-  state.uploadedImage = null;
-  els.video.srcObject = state.stream;
-  els.fallback.hidden = true;
-  els.captureButton.disabled = false;
-  els.startButton.textContent = "카메라 사용 중";
+  try {
+    stopCamera();
+    state.stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: state.facingMode },
+        width: { ideal: 1440 },
+        height: { ideal: 1920 },
+      },
+      audio: false,
+    });
+    els.video.srcObject = state.stream;
+    await els.video.play();
+    state.uploadedImage = null;
+    els.permissionCard.hidden = true;
+    showToast("실시간 구도 가이드를 켰습니다.");
+  } catch (error) {
+    showToast("카메라 권한 또는 HTTPS 환경을 확인하세요.");
+  }
 }
 
-function switchPanel(event) {
-  const button = event.target.closest("[data-mode]");
+async function switchCamera() {
+  state.facingMode = state.facingMode === "environment" ? "user" : "environment";
+  if (state.stream) await startCamera();
+  else showToast(state.facingMode === "environment" ? "후면 카메라 우선" : "전면 카메라 우선");
+}
+
+function stopCamera() {
+  if (!state.stream) return;
+  state.stream.getTracks().forEach((track) => track.stop());
+  state.stream = null;
+  els.video.srcObject = null;
+}
+
+function loadPhoto(event) {
+  const [file] = event.target.files;
+  if (!file) return;
+  const image = new Image();
+  const url = URL.createObjectURL(file);
+  image.onload = () => {
+    stopCamera();
+    state.uploadedImage = image;
+    els.permissionCard.hidden = true;
+    URL.revokeObjectURL(url);
+    showToast("사진에 구도와 필터를 적용합니다.");
+  };
+  image.src = url;
+  event.target.value = "";
+}
+
+function switchTab(event) {
+  const button = event.target.closest("[data-tab]");
   if (!button) return;
-  const mode = button.dataset.mode;
-  els.modeTabs.querySelectorAll("button").forEach((item) => {
+  const tab = button.dataset.tab;
+  els.tabBar.querySelectorAll("button").forEach((item) => {
     item.classList.toggle("is-active", item === button);
   });
   els.panels.forEach((panel) => {
-    panel.classList.toggle("is-hidden", panel.dataset.panel !== mode);
+    panel.classList.toggle("is-hidden", panel.dataset.panel !== tab);
   });
 }
 
-function renderCards() {
-  els.guideList.append(...guides.map((guide) => makeCard(guide, "guide")));
-  els.filterList.append(...filters.map((filter) => makeCard(filter, "filter")));
-  els.lessonList.append(...lessons.map((lesson) => makeCard(lesson, "lesson")));
-  syncActiveCards();
+function renderPickers() {
+  els.guidePicker.append(...guides.map((guide) => makePickerCard(guide, "guide")));
+  els.filterPicker.append(...filters.map((filter) => makePickerCard(filter, "filter")));
+  els.lessonStack.append(...lessons.map(makeLessonCard));
+  syncPickerState();
 }
 
-function makeCard(item, type) {
+function makePickerCard(item, type) {
   const button = document.createElement("button");
-  button.className = "card-button";
+  button.className = "picker-card";
   button.type = "button";
-  button.innerHTML = `
-    <span class="card-icon">${item.icon}</span>
-    <span class="card-copy">
-      <strong>${item.name}</strong>
-      <span>${item.tip}</span>
-    </span>
-  `;
+  button.innerHTML = `<strong>${item.name}</strong><span>${item.short}</span>`;
   button.addEventListener("click", () => {
-    if (type === "guide") state.guide = item;
-    if (type === "filter") state.filter = item;
-    if (type === "lesson") {
-      els.shootingTip.textContent = item.tip;
-      return;
-    }
-    updateGuideCopy();
-    syncActiveCards();
+    state[type] = item;
+    syncPickerState();
+    updateCopy();
   });
   return button;
 }
 
-function syncActiveCards() {
-  els.guideList.querySelectorAll(".card-button").forEach((button, index) => {
+function makeLessonCard([title, body]) {
+  const card = document.createElement("article");
+  card.className = "lesson-card";
+  card.innerHTML = `<strong>${title}</strong><p>${body}</p>`;
+  card.addEventListener("click", () => {
+    els.guideTip.textContent = body;
+    showToast(title);
+  });
+  return card;
+}
+
+function syncPickerState() {
+  els.guidePicker.querySelectorAll(".picker-card").forEach((button, index) => {
     button.classList.toggle("is-active", guides[index] === state.guide);
   });
-  els.filterList.querySelectorAll(".card-button").forEach((button, index) => {
+  els.filterPicker.querySelectorAll(".picker-card").forEach((button, index) => {
     button.classList.toggle("is-active", filters[index] === state.filter);
   });
 }
 
-function updateGuideCopy() {
-  els.guideLabel.textContent = state.guide.name;
-  els.shootingTip.textContent = state.guide.tip;
+function updateCopy() {
+  els.guideName.textContent = `${state.guide.name} 가이드`;
+  els.guideTip.textContent = state.guide.tip;
+  els.activeSummary.textContent = `${state.filter.name} · ${state.guide.name}`;
 }
 
-function drawLoop() {
-  drawFrame();
-  requestAnimationFrame(drawLoop);
+function draw() {
+  drawSource();
+  drawOutput();
+  requestAnimationFrame(draw);
 }
 
-function drawFrame() {
-  const canvas = els.renderCanvas;
-  const ctx = renderCtx;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawSource() {
+  const rect = canvasRect(els.sourceCanvas);
+  sourceCtx.clearRect(0, 0, rect.width, rect.height);
 
-  const hasVideo = state.stream && els.video.readyState >= 2;
-  if (hasVideo) {
-    drawVideoFrame();
-  } else if (state.uploadedImage) {
-    sourceCtx.clearRect(0, 0, els.sourceCanvas.width, els.sourceCanvas.height);
-    drawCoverImage(sourceCtx, state.uploadedImage, sourceCanvasRect());
-  } else {
-    drawSampleSource();
+  if (state.stream && els.video.readyState >= 2) {
+    sourceCtx.save();
+    if (state.facingMode === "user") {
+      sourceCtx.translate(rect.width, 0);
+      sourceCtx.scale(-1, 1);
+    }
+    drawCover(sourceCtx, els.video, rect);
+    sourceCtx.restore();
+    return;
   }
 
-  ctx.save();
-  ctx.filter = state.filter.css;
-  ctx.drawImage(els.sourceCanvas, 0, 0, canvas.width, canvas.height);
-  ctx.restore();
-  applyOverlay();
-  drawGuide();
-  state.lastFrameReady = true;
+  if (state.uploadedImage) {
+    drawCover(sourceCtx, state.uploadedImage, rect);
+    return;
+  }
+
+  drawSampleScene();
+}
+
+function drawSampleScene() {
+  const { width, height } = canvasRect(els.sourceCanvas);
+  const gradient = sourceCtx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#f4d6b5");
+  gradient.addColorStop(0.42, "#c8d0bd");
+  gradient.addColorStop(1, "#415849");
+  sourceCtx.fillStyle = gradient;
+  sourceCtx.fillRect(0, 0, width, height);
+
+  sourceCtx.fillStyle = "rgba(255, 250, 241, 0.82)";
+  roundRect(sourceCtx, width * 0.11, height * 0.14, width * 0.46, height * 0.44, 46);
+  sourceCtx.fill();
+  sourceCtx.fillStyle = "rgba(34, 44, 36, 0.8)";
+  roundRect(sourceCtx, width * 0.53, height * 0.26, width * 0.31, height * 0.38, 210);
+  sourceCtx.fill();
+  sourceCtx.fillStyle = "rgba(255, 250, 241, 0.9)";
+  sourceCtx.beginPath();
+  sourceCtx.arc(width * 0.685, height * 0.31, width * 0.055, 0, Math.PI * 2);
+  sourceCtx.fill();
+  sourceCtx.fillStyle = "rgba(13, 12, 10, 0.52)";
+  sourceCtx.font = "900 72px Inter, sans-serif";
+  sourceCtx.fillText("MOOD", width * 0.15, height * 0.23);
+}
+
+function drawOutput() {
+  const { width, height } = canvasRect(els.outputCanvas);
+  outputCtx.clearRect(0, 0, width, height);
+  outputCtx.save();
+  outputCtx.filter = state.filter.css;
+  outputCtx.drawImage(els.sourceCanvas, 0, 0, width, height);
+  outputCtx.restore();
+  applyFilterOverlay(width, height);
+  drawGuide(width, height);
+  state.ready = true;
   els.saveButton.disabled = false;
 }
 
-function drawVideoFrame() {
-  sourceCtx.save();
-  sourceCtx.clearRect(0, 0, els.sourceCanvas.width, els.sourceCanvas.height);
-  sourceCtx.translate(els.sourceCanvas.width, 0);
-  sourceCtx.scale(-1, 1);
-  drawCoverImage(sourceCtx, els.video, sourceCanvasRect());
-  sourceCtx.restore();
+function applyFilterOverlay(width, height) {
+  const [r, g, b] = state.filter.overlay;
+  outputCtx.save();
+  outputCtx.globalAlpha = state.filterStrength * 0.34;
+  outputCtx.globalCompositeOperation = state.filter.blend;
+  outputCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+  outputCtx.fillRect(0, 0, width, height);
+  outputCtx.restore();
+
+  drawVignette(width, height);
+  drawGrain(width, height);
 }
 
-function drawSampleSource() {
-  const ctx = sourceCtx;
-  const { width, height } = els.sourceCanvas;
-  const gradient = ctx.createLinearGradient(0, 0, width, height);
-  gradient.addColorStop(0, "#f8dfc4");
-  gradient.addColorStop(0.45, "#cfdccf");
-  gradient.addColorStop(1, "#5f7568");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.fillStyle = "rgba(255,255,255,0.78)";
-  roundRect(ctx, 135, 160, 430, 560, 42);
-  ctx.fill();
-  ctx.fillStyle = "rgba(49, 63, 55, 0.82)";
-  roundRect(ctx, 670, 250, 380, 500, 200);
-  ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.86)";
-  ctx.beginPath();
-  ctx.arc(850, 320, 74, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(31,29,25,0.62)";
-  ctx.font = "900 68px Inter, sans-serif";
-  ctx.fillText("GUIDE", 170, 260);
-}
-
-function loadSampleScene() {
-  state.uploadedImage = null;
-  els.fallback.hidden = true;
-  els.captureButton.disabled = false;
-  updateGuideCopy();
-}
-
-function loadUploadedPhoto(event) {
-  const [file] = event.target.files;
-  if (!file) return;
-  const image = new Image();
-  image.onload = () => {
-    state.uploadedImage = image;
-    els.fallback.hidden = true;
-    els.captureButton.disabled = false;
-    URL.revokeObjectURL(image.src);
-  };
-  image.src = URL.createObjectURL(file);
-}
-
-function capture() {
-  if (!state.lastFrameReady) return;
-  const dataUrl = els.renderCanvas.toDataURL("image/png");
-  state.captures.unshift(dataUrl);
-  state.captures = state.captures.slice(0, 8);
-  renderFilmstrip();
-}
-
-function saveCurrentFrame() {
-  const link = document.createElement("a");
-  link.download = `young-ppotto-${Date.now()}.png`;
-  link.href = els.renderCanvas.toDataURL("image/png");
-  link.click();
-}
-
-function renderFilmstrip() {
-  els.filmstrip.innerHTML = "";
-  for (const captureUrl of state.captures) {
-    const item = document.createElement("button");
-    item.className = "thumb";
-    item.type = "button";
-    const image = document.createElement("img");
-    image.src = captureUrl;
-    image.alt = "촬영 결과";
-    item.append(image);
-    item.addEventListener("click", () => {
-      const preview = new Image();
-      preview.onload = () => {
-        state.uploadedImage = preview;
-      };
-      preview.src = captureUrl;
-    });
-    els.filmstrip.append(item);
-  }
-}
-
-function applyOverlay() {
-  const ctx = renderCtx;
-  const { width, height } = els.renderCanvas;
-  ctx.fillStyle = state.filter.overlay;
-  ctx.fillRect(0, 0, width, height);
-
-  if (state.grain > 0) drawGrain(ctx, width, height, state.grain);
-  if (state.vignette > 0) drawVignette(ctx, width, height, state.vignette / 100);
-}
-
-function drawGuide() {
-  const ctx = renderCtx;
-  const { width, height } = els.renderCanvas;
-  ctx.save();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
-  ctx.lineWidth = 3;
-  ctx.setLineDash([18, 14]);
+function drawGuide(width, height) {
+  outputCtx.save();
+  outputCtx.strokeStyle = "rgba(255,250,241,0.74)";
+  outputCtx.fillStyle = "rgba(255,250,241,0.88)";
+  outputCtx.lineWidth = 3;
+  outputCtx.setLineDash([18, 16]);
 
   if (state.guide.id === "thirds") {
-    drawLine(width / 3, 0, width / 3, height);
-    drawLine((width * 2) / 3, 0, (width * 2) / 3, height);
-    drawLine(0, height / 3, width, height / 3);
-    drawLine(0, (height * 2) / 3, width, (height * 2) / 3);
-    drawFocusDot(width / 3, height / 3);
-    drawFocusDot((width * 2) / 3, height / 3);
-    drawFocusDot(width / 3, (height * 2) / 3);
-    drawFocusDot((width * 2) / 3, (height * 2) / 3);
+    line(width / 3, 0, width / 3, height);
+    line((width * 2) / 3, 0, (width * 2) / 3, height);
+    line(0, height / 3, width, height / 3);
+    line(0, (height * 2) / 3, width, (height * 2) / 3);
+    [width / 3, (width * 2) / 3].forEach((x) => {
+      [height / 3, (height * 2) / 3].forEach((y) => dot(x, y));
+    });
   }
 
   if (state.guide.id === "center") {
-    ctx.setLineDash([]);
-    drawLine(width / 2, 0, width / 2, height);
-    drawLine(0, height / 2, width, height / 2);
-    ctx.beginPath();
-    ctx.arc(width / 2, height / 2, 170, 0, Math.PI * 2);
-    ctx.stroke();
+    outputCtx.setLineDash([]);
+    line(width / 2, 0, width / 2, height);
+    line(0, height / 2, width, height / 2);
+    outputCtx.beginPath();
+    outputCtx.arc(width / 2, height / 2, width * 0.18, 0, Math.PI * 2);
+    outputCtx.stroke();
   }
 
   if (state.guide.id === "horizon") {
-    drawLine(0, height * 0.42, width, height * 0.42);
-    drawLine(0, height * 0.58, width, height * 0.58);
+    line(0, height * 0.38, width, height * 0.38);
+    line(0, height * 0.52, width, height * 0.52);
+    line(0, height * 0.66, width, height * 0.66);
   }
 
   if (state.guide.id === "diagonal") {
-    drawLine(0, height, width, 0);
-    drawLine(0, height * 0.68, width * 0.68, 0);
-    drawLine(width * 0.32, height, width, height * 0.32);
+    line(0, height, width, 0);
+    line(0, height * 0.64, width * 0.64, 0);
+    line(width * 0.36, height, width, height * 0.36);
   }
 
   if (state.guide.id === "portrait") {
-    ctx.setLineDash([]);
-    roundRect(ctx, width * 0.28, height * 0.14, width * 0.44, height * 0.68, 220);
-    ctx.stroke();
-    drawLine(width * 0.18, height * 0.22, width * 0.82, height * 0.22);
-    drawLine(width * 0.18, height * 0.82, width * 0.82, height * 0.82);
+    outputCtx.setLineDash([]);
+    roundRect(outputCtx, width * 0.25, height * 0.15, width * 0.5, height * 0.64, width * 0.23);
+    outputCtx.stroke();
+    line(width * 0.18, height * 0.24, width * 0.82, height * 0.24);
+    line(width * 0.18, height * 0.8, width * 0.82, height * 0.8);
   }
 
-  ctx.restore();
-
-  function drawLine(x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
+  if (state.guide.id === "golden") {
+    outputCtx.setLineDash([]);
+    outputCtx.beginPath();
+    for (let angle = 0; angle < Math.PI * 2.25; angle += 0.04) {
+      const radius = Math.exp(0.23 * angle) * 24;
+      const x = width * 0.62 - Math.cos(angle) * radius;
+      const y = height * 0.42 + Math.sin(angle) * radius;
+      if (angle === 0) outputCtx.moveTo(x, y);
+      else outputCtx.lineTo(x, y);
+    }
+    outputCtx.stroke();
+    dot(width * 0.62, height * 0.42);
   }
 
-  function drawFocusDot(x, y) {
-    ctx.save();
-    ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(255,255,255,0.92)";
-    ctx.beginPath();
-    ctx.arc(x, y, 9, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+  outputCtx.restore();
+
+  function line(x1, y1, x2, y2) {
+    outputCtx.beginPath();
+    outputCtx.moveTo(x1, y1);
+    outputCtx.lineTo(x2, y2);
+    outputCtx.stroke();
+  }
+
+  function dot(x, y) {
+    outputCtx.save();
+    outputCtx.setLineDash([]);
+    outputCtx.beginPath();
+    outputCtx.arc(x, y, 9, 0, Math.PI * 2);
+    outputCtx.fill();
+    outputCtx.restore();
   }
 }
 
-function drawGrain(ctx, width, height, amount) {
-  const density = Math.floor((width * height * amount) / 3800);
-  ctx.save();
-  ctx.globalAlpha = 0.08;
-  for (let i = 0; i < density; i += 1) {
-    const value = Math.random() > 0.5 ? 255 : 0;
-    ctx.fillStyle = `rgb(${value},${value},${value})`;
-    ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
-  }
-  ctx.restore();
-}
-
-function drawVignette(ctx, width, height, strength) {
-  const gradient = ctx.createRadialGradient(width / 2, height / 2, width * 0.16, width / 2, height / 2, width * 0.72);
+function drawVignette(width, height) {
+  const gradient = outputCtx.createRadialGradient(width / 2, height / 2, width * 0.08, width / 2, height / 2, width * 0.76);
   gradient.addColorStop(0, "rgba(0,0,0,0)");
-  gradient.addColorStop(1, `rgba(0,0,0,${strength})`);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
+  gradient.addColorStop(1, `rgba(0,0,0,${state.vignette})`);
+  outputCtx.fillStyle = gradient;
+  outputCtx.fillRect(0, 0, width, height);
 }
 
-function drawCoverImage(ctx, image, rect) {
-  const sourceWidth = image.videoWidth || image.naturalWidth || image.width;
-  const sourceHeight = image.videoHeight || image.naturalHeight || image.height;
+function drawGrain(width, height) {
+  if (state.grain <= 0) return;
+  const dots = Math.floor((width * height * state.grain) / 5600);
+  outputCtx.save();
+  outputCtx.globalAlpha = 0.075;
+  for (let i = 0; i < dots; i += 1) {
+    const value = Math.random() > 0.5 ? 255 : 24;
+    outputCtx.fillStyle = `rgb(${value},${value},${value})`;
+    outputCtx.fillRect(Math.random() * width, Math.random() * height, 1.2, 1.2);
+  }
+  outputCtx.restore();
+}
+
+function capture() {
+  if (!state.ready) return;
+  state.lastShot = els.outputCanvas.toDataURL("image/png");
+  updateLastShot();
+  showToast("촬영했습니다. 저장을 누르면 PNG로 내려받습니다.");
+}
+
+function save() {
+  const href = state.lastShot || els.outputCanvas.toDataURL("image/png");
+  const link = document.createElement("a");
+  link.download = `young-ppotto-${Date.now()}.png`;
+  link.href = href;
+  link.click();
+  showToast("사진 저장을 시작했습니다.");
+}
+
+function restoreLastShot() {
+  if (!state.lastShot) {
+    els.photoInput.click();
+    return;
+  }
+  const image = new Image();
+  image.onload = () => {
+    stopCamera();
+    state.uploadedImage = image;
+    showToast("최근 촬영 컷을 다시 불러왔습니다.");
+  };
+  image.src = state.lastShot;
+}
+
+function updateLastShot() {
+  els.lastShotButton.innerHTML = "";
+  if (!state.lastShot) return;
+  const image = document.createElement("img");
+  image.src = state.lastShot;
+  image.alt = "최근 촬영 사진";
+  els.lastShotButton.append(image);
+}
+
+function showToast(message) {
+  els.toast.textContent = message;
+  els.toast.classList.add("is-visible");
+  clearTimeout(state.toastTimer);
+  state.toastTimer = setTimeout(() => {
+    els.toast.classList.remove("is-visible");
+  }, 1800);
+}
+
+function drawCover(ctx, source, rect) {
+  const sourceWidth = source.videoWidth || source.naturalWidth || source.width;
+  const sourceHeight = source.videoHeight || source.naturalHeight || source.height;
+  if (!sourceWidth || !sourceHeight) return;
   const sourceRatio = sourceWidth / sourceHeight;
   const targetRatio = rect.width / rect.height;
   let sx = 0;
@@ -386,16 +535,11 @@ function drawCoverImage(ctx, image, rect) {
     sy = (sourceHeight - sh) / 2;
   }
 
-  ctx.drawImage(image, sx, sy, sw, sh, rect.x, rect.y, rect.width, rect.height);
+  ctx.drawImage(source, sx, sy, sw, sh, rect.x, rect.y, rect.width, rect.height);
 }
 
-function sourceCanvasRect() {
-  return { x: 0, y: 0, width: els.sourceCanvas.width, height: els.sourceCanvas.height };
-}
-
-function setFallback(title, subtitle) {
-  els.fallback.hidden = false;
-  els.fallback.innerHTML = `<strong>${title}</strong><span>${subtitle}</span>`;
+function canvasRect(canvas) {
+  return { x: 0, y: 0, width: canvas.width, height: canvas.height };
 }
 
 function roundRect(ctx, x, y, width, height, radius) {
