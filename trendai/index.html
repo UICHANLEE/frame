@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f1115" />
+    <title>데일리 트렌드 뷰어</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-row">
+        <h1 class="logo">📈 데일리 트렌드</h1>
+        <form id="searchForm" class="search-form">
+          <input id="searchInput" type="search" placeholder="유튜브 검색…" autocomplete="off" />
+          <button type="submit">🔍</button>
+        </form>
+        <button id="refreshButton" class="refresh-button" type="button" title="캐시 비우고 새로고침">⟳ 새로고침</button>
+      </div>
+      <nav class="tab-bar" id="tabBar">
+        <button class="is-active" data-tab="video" type="button">▶ 유튜브</button>
+        <button data-tab="shorts" type="button">📱 쇼츠</button>
+        <button data-tab="ai" type="button">🤖 AI 영상</button>
+        <button data-tab="reels" type="button">📸 릴스</button>
+        <button data-tab="x" type="button">𝕏 트위터</button>
+        <button data-tab="threads" type="button">🧵 스레드</button>
+        <button data-tab="tiktok" type="button">🎵 틱톡</button>
+      </nav>
+    </header>
+
+    <main class="app-main">
+      <!-- 유튜브/쇼츠 공용 필터 -->
+      <section class="filter-bar" id="videoFilters" hidden>
+        <div class="chip-row" id="categoryRow"></div>
+        <div class="filter-right">
+          <div class="chip-row" id="periodRow">
+            <button class="chip" data-period="today" type="button">오늘</button>
+            <button class="chip is-active" data-period="week" type="button">이번 주</button>
+            <button class="chip" data-period="month" type="button">이번 달</button>
+          </div>
+          <details class="sort-menu" id="videoSortMenu">
+            <summary>정렬: <span data-label>조회수순</span></summary>
+            <div class="sort-options">
+              <button data-sort="views" type="button">조회수순</button>
+              <button data-sort="likes" type="button">좋아요순</button>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 소셜 탭 공용: 정렬 + 계정 관리 -->
+      <section class="filter-bar" id="socialFilters" hidden>
+        <details class="sort-menu" id="socialSortMenu">
+          <summary>정렬: <span data-label>조회수순</span></summary>
+          <div class="sort-options" id="socialSortOptions"></div>
+        </details>
+        <form id="accountForm" class="account-form">
+          <input id="accountInput" type="text" placeholder="계정 추가 (예: openai)" autocomplete="off" />
+          <button type="submit">추가</button>
+        </form>
+        <div class="chip-row" id="accountRow"></div>
+      </section>
+
+      <div class="status-line" id="statusLine"></div>
+      <div class="grid" id="grid"></div>
+      <div class="ai-page" id="aiPage" hidden></div>
+    </main>
+
+    <!-- 영상 팝업 -->
+    <div class="modal" id="playerModal" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-body">
+        <button class="modal-close" data-close type="button">✕ 닫기</button>
+        <div class="player-frame" id="playerFrame"></div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
