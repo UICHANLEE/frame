@@ -201,6 +201,24 @@ YT_PARAMS = {
     ("shorts", "any"): "CAMSBBABGAE=",
 }
 
+# 조회수순 정렬 sp — 결과 수는 적지만 고조회수 영상이 섞여 있어 보조 소스로 병합.
+YT_PARAMS_VIEWSORT = {
+    ("video", "today"): "CAMSBAgCEAE",
+    ("video", "week"): "CAMSBAgDEAE",
+    ("video", "month"): "CAMSBAgEEAE",
+    ("shorts", "today"): "CAMSBggCEAEYAQ==",
+    ("shorts", "week"): "CAMSBggDEAEYAQ==",
+    ("shorts", "month"): "CAMSBggEEAEYAQ==",
+}
+
+# 기간 포함 관계: 이번 주 결과에는 오늘 결과도 포함되어야 한다.
+# (유튜브 검색은 기간별로 서로 다른 집합을 돌려주므로 하위 기간을 합쳐 병합)
+PERIOD_SUBSETS = {
+    "today": ["today"],
+    "week": ["week", "today"],
+    "month": ["month", "week", "today"],
+}
+
 YT_CONTEXT = {
     "client": {
         "clientName": "WEB",
@@ -338,10 +356,41 @@ def api_videos(mode, category, period, sort):
     mode = "shorts" if mode == "shorts" else "video"
 
     def produce():
-        query = CATEGORIES[category]
+        base = CATEGORIES[category]
         if mode == "shorts":
-            query += " shorts"
-        items = yt_search_items(query, YT_PARAMS[(mode, period)])
+            # 쇼츠는 검색어에 따라 결과 품질 차이가 커서 한/영 키워드를 병합.
+            if category == "all":
+                queries = ["shorts", "쇼츠"]
+            else:
+                queries = [base + " shorts", base + " 쇼츠"]
+        else:
+            queries = [base]
+
+        # 상위 기간은 하위 기간(오늘 ⊆ 주 ⊆ 월) 결과를 모두 포함해야 하므로
+        # 관련성 검색 + 조회수순 검색을 기간별로 전부 수집해 병합한다.
+        param_sets = []
+        for sub in PERIOD_SUBSETS[period]:
+            param_sets.append((YT_PARAMS[(mode, sub)], 3))
+            param_sets.append((YT_PARAMS_VIEWSORT[(mode, sub)], 1))
+
+        items, seen = [], set()
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            futures = [
+                pool.submit(yt_search_items, query, params, pages)
+                for query in queries
+                for params, pages in param_sets
+            ]
+            for future in as_completed(futures):
+                try:
+                    batch = future.result()
+                except Exception:
+                    continue
+                for item in batch:
+                    if item["id"] in seen:
+                        continue
+                    seen.add(item["id"])
+                    items.append(item)
+
         if mode == "shorts":
             items = [it for it in items if it["duration"] <= 75]
         else:
