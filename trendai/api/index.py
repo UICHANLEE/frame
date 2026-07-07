@@ -2,6 +2,12 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
-from server import Handler as handler  # noqa: F401 — Vercel이 handler 클래스를 찾음
+from server import Handler as _TrendHandler
+
+
+class handler(_TrendHandler):
+    """Vercel이 인식하는 BaseHTTPRequestHandler 서브클래스."""
