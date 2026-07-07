@@ -15,11 +15,25 @@ python3 server.py
 
 ## Vercel 배포
 
-이 저장소는 Vercel에 바로 배포할 수 있습니다.
+### 방법 A — trendai 저장소 (권장)
 
-1. [Vercel](https://vercel.com)에서 **Import Git Repository** → `UICHANLEE/trendai` 선택
-2. Framework Preset: **Other** (또는 기본값)
-3. Deploy 클릭
+1. 로컬에서 trendai 저장소로 푸시:
+   ```bash
+   # frame 저장소 루트에서
+   bash trendai/scripts/publish-trendai.sh
+   ```
+2. [Vercel](https://vercel.com) → **Import Git Repository** → `UICHANLEE/trendai` 선택 → Deploy
+
+### 방법 B — frame 저장소 서브폴더 (즉시 테스트)
+
+Cursor Cloud에서 trendai 저장소에 직접 푸시 권한이 없을 때 사용합니다.
+
+1. Vercel → Import → `UICHANLEE/frame` 선택
+2. **Root Directory** 를 `trendai` 로 설정
+3. Branch: `cursor/trendai-trend-viewer-2ff5` (또는 main 머지 후 main)
+4. Deploy
+
+### 공통 참고
 
 - 정적 파일(`index.html`, `styles.css`, `app.js`)은 루트에서 자동 제공됩니다.
 - `/api/*` 요청은 `api/index.py` 서버리스 함수로 라우팅됩니다.
