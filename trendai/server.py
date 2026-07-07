@@ -19,6 +19,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 8778
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Vercel 서버리스는 배포 디렉터리가 읽기 전용 → 계정 JSON은 /tmp에 저장
+DATA_DIR = "/tmp/trendai-data" if os.environ.get("VERCEL") else BASE_DIR
+if DATA_DIR != BASE_DIR:
+    os.makedirs(DATA_DIR, exist_ok=True)
 CACHE_TTL = 3600  # 1시간
 
 UA = (
@@ -748,7 +752,7 @@ ACCOUNTS_LOCK = threading.Lock()
 
 
 def _account_path(platform):
-    return os.path.join(BASE_DIR, ACCOUNT_FILES[platform])
+    return os.path.join(DATA_DIR, ACCOUNT_FILES[platform])
 
 
 def load_accounts(platform):

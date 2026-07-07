@@ -13,6 +13,19 @@ python3 server.py
 
 브라우저에서 **http://localhost:8778** 접속
 
+## Vercel 배포
+
+이 저장소는 Vercel에 바로 배포할 수 있습니다.
+
+1. [Vercel](https://vercel.com)에서 **Import Git Repository** → `UICHANLEE/trendai` 선택
+2. Framework Preset: **Other** (또는 기본값)
+3. Deploy 클릭
+
+- 정적 파일(`index.html`, `styles.css`, `app.js`)은 루트에서 자동 제공됩니다.
+- `/api/*` 요청은 `api/index.py` 서버리스 함수로 라우팅됩니다.
+- Vercel에서는 계정 추가/삭제가 `/tmp`에만 저장되어 **재배포 시 초기화**됩니다. 로컬 실행 시에는 JSON 파일로 영구 저장됩니다.
+- 일부 API(틱톡·릴스 등)는 응답이 느려 **Hobby 플랜(10초 제한)** 에서 타임아웃될 수 있습니다. Pro 플랜(최대 60초)을 권장합니다.
+
 ## 기능
 
 - **유튜브 / 쇼츠 탭**: 카테고리(전체·**AI**·먹방·뷰티·브이로그·예능·영화/드라마·테크·지식·여행·동물) × 기간(오늘/이번 주/이번 달) 필터, **접이식 정렬 메뉴로 조회수순/좋아요순 전환**(좋아요는 영상마다 서버가 조회해 보강), 카드 클릭 시 팝업 재생
